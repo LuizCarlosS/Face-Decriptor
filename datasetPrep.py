@@ -10,6 +10,7 @@ import cv2
 #img = Image.open("00063_931230_fa.ppm").convert('LA')
 #img.save("00063_931230_fa.png")
 
+
 import os
 def load_images_from_folder(folder):
     images = []
