@@ -7,6 +7,8 @@ Created on Tue Sep 25 20:44:26 2018
 #from PIL import Image
 import cv2
 import numpy as np
+import pandas as pd
+from keras.utils import to_categorical
 #img = Image.open("00063_931230_fa.ppm").convert('LA')
 #img.save("00063_931230_fa.png")
 
@@ -21,7 +23,12 @@ def load_images_from_folder(folder):
 imgset = load_images_from_folder(r"C:\Users\luido\OneDrive\Documentos\GitHub\Face-Decriptor\batman")
 img = imgset[0]
 for img in imgset:
-  np.reshape(img, (768, 512, 1))
+  img.resize((768, 512), refcheck = False)
+
+imgset_array = np.array(imgset)
+y = pd.read_csv('OUT.csv')
+y_array = np.array(y)
+one_hot_y = to_categorical(y_array)
 #i = 0
 #for img in imgset:
     #cv2.imwrite("C://Users//luido//Desktop//batman//"+str(i)+".ppm", img)
