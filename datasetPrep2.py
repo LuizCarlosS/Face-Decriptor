@@ -26,9 +26,15 @@ for img in imgset:
   img.resize((768, 512), refcheck = False)
 
 imgset_array = np.array(imgset)
+
+#dados categoricos
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+labelEncoder_y = LabelEncoder()
+oneHotEncoder = OneHotEncoder(categorical_features = [0])
 y = pd.read_csv('OUT.csv')
-y_array = np.array(y)
-one_hot_y = to_categorical(y_array)
+y = labelEncoder_y.fit_transform(y)
+y = y.reshape(-1, 1)
+y = oneHotEncoder.fit_transform(y).toarray()
 #i = 0
 #for img in imgset:
     #cv2.imwrite("C://Users//luido//Desktop//batman//"+str(i)+".ppm", img)
