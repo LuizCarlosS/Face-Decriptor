@@ -40,6 +40,7 @@ y = oneHotEncoder.fit_transform(y).toarray()
 
 #começo da rede neural
 import keras
+from keras.optimizers import SGD
 from keras.models import Sequential,Input,Model,load_model
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
@@ -57,7 +58,7 @@ from sklearn.model_selection import train_test_split
 train_X,valid_X,train_label,valid_label = train_test_split(X, y, test_size=0.2, random_state=13)
 
 batch_size = 64
-epochs = 20
+epochs = 30
 num_classes = 5
 
 #modelo da rede neural
@@ -73,34 +74,40 @@ ethn_model.add(MaxPooling2D(pool_size=(2, 2),padding='same'))
 ethn_model.add(Dropout(0.25))
 
 ethn_model.add(Conv2D(128, (3, 3), activation='linear',padding='same'))
+ethn_model.add(LeakyReLU(alpha=0.1))
+ethn_model.add(MaxPooling2D(pool_size=(2, 2),padding='same'))
+ethn_model.add(Dropout(0.25))
+
+ethn_model.add(Conv2D(256, (3, 3), activation='linear',padding='same'))
 ethn_model.add(LeakyReLU(alpha=0.1))                  
 ethn_model.add(MaxPooling2D(pool_size=(2, 2),padding='same'))
 ethn_model.add(Dropout(0.4))
 ethn_model.add(Flatten())
 
-ethn_model.add(Dense(128, activation='linear'))
+ethn_model.add(Dense(256, activation='linear'))
 ethn_model.add(LeakyReLU(alpha=0.1))
 ethn_model.add(Dropout(0.3))                  
 ethn_model.add(Dense(output_dim = num_classes, activation='softmax'))
 
 ethn_model.summary()
 
-#otimizador adam
-ethn_model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.Adam(),metrics=['accuracy'])
+#otimizador sgd
+sgd = SGD(lr=0.00001, decay=1e-6, momentum=0.9, nesterov=True)
+ethn_model.compile(loss=keras.losses.categorical_crossentropy, optimizer=sgd,metrics=['accuracy'])
 
 fashion_train = ethn_model.fit(train_X, train_label, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_label))
 
 ethn_model.save('ethn_model_dropout.h5py')
 
-model = load_model(r'C:\Users\7\Desktop\Desktop\Face Decriptor\ethn_model_dropout.h5py')
-teste = cv2.imread(r'C:\Users\7\Desktop\Desktop\Face Decriptor\yo.jpg')
-teste = cv2.cvtColor(teste, cv2.COLOR_BGR2GRAY)
-reTeste = cv2.resize(teste, (100, 150), interpolation = cv2.INTER_AREA)
-reTeste.resize((150,100), refcheck = False)
+#model = load_model(r'C:\Users\7\Desktop\Desktop\Face Decriptor\ethn_model_dropout.h5py')
+#teste = cv2.imread(r'C:\Users\7\Desktop\Desktop\Face Decriptor\yo.jpg')
+#teste = cv2.cvtColor(teste, cv2.COLOR_BGR2GRAY)
+#reTeste = cv2.resize(teste, (100, 150), interpolation = cv2.INTER_AREA)
+#reTeste.resize((150,100), refcheck = False)
 
 #label_teste = y[5]
 #label_teste = label_teste.reshape(-1, 1)
-bacate = reTeste.reshape(-1, 150, 100, 1)
-teste_eval = ethn_model.predict(bacate)
+#bacate = reTeste.reshape(-1, 150, 100, 1)
+#teste_eval = ethn_model.predict(bacate)
 
 
