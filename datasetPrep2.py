@@ -22,7 +22,7 @@ def load_images_from_folder(folder):
         images.append(resized)
     return images
 
-imgset = load_images_from_folder(r"C:\Users\luido\OneDrive\Documentos\GitHub\Face-Decriptor\batman")
+imgset = load_images_from_folder(r"C:\Users\7\Desktop\Desktop\Face Decriptor\batman")
 img = imgset[0]
 for img in imgset:
   img.resize((150, 100), refcheck = False)
@@ -33,14 +33,14 @@ imgset_array = np.array(imgset)
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 labelEncoder_y = LabelEncoder()
 oneHotEncoder = OneHotEncoder(categorical_features = [0])
-y = pd.read_csv('label.csv')
+y = pd.read_csv(r'C:\Users\7\Desktop\Desktop\Face Decriptor\label.csv')
 y = labelEncoder_y.fit_transform(y)
 y = y.reshape(-1, 1)
 y = oneHotEncoder.fit_transform(y).toarray()
 
 #começo da rede neural
 import keras
-from keras.models import Sequential,Input,Model
+from keras.models import Sequential,Input,Model,load_model
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
@@ -81,7 +81,7 @@ ethn_model.add(Flatten())
 ethn_model.add(Dense(128, activation='linear'))
 ethn_model.add(LeakyReLU(alpha=0.1))
 ethn_model.add(Dropout(0.3))                  
-ethn_model.add(Dense(num_classes, activation='softmax'))
+ethn_model.add(Dense(output_dim = num_classes, activation='softmax'))
 
 ethn_model.summary()
 
@@ -92,11 +92,15 @@ fashion_train = ethn_model.fit(train_X, train_label, batch_size=batch_size,epoch
 
 ethn_model.save('ethn_model_dropout.h5py')
 
-
-teste = cv2.imread('Jack Black-c.jpg')
+model = load_model(r'C:\Users\7\Desktop\Desktop\Face Decriptor\ethn_model_dropout.h5py')
+teste = cv2.imread(r'C:\Users\7\Desktop\Desktop\Face Decriptor\yo.jpg')
+teste = cv2.cvtColor(teste, cv2.COLOR_BGR2GRAY)
 reTeste = cv2.resize(teste, (100, 150), interpolation = cv2.INTER_AREA)
 reTeste.resize((150,100), refcheck = False)
 
-label_teste = y[5]
+#label_teste = y[5]
+#label_teste = label_teste.reshape(-1, 1)
 bacate = reTeste.reshape(-1, 150, 100, 1)
-teste_eval = ethn_model.evaluate(bacate, label_teste, verbose = 1)
+teste_eval = ethn_model.predict(bacate)
+
+
