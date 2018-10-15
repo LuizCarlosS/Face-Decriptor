@@ -55,11 +55,11 @@ from keras.layers.advanced_activations import LeakyReLU
 
 batch_size = 64
 epochs = 4
-num_classes = 10
+num_classes = 5
 
 #modelo da rede neural
 fashion_model = Sequential()
-fashion_model.add(Conv2D(32, kernel_size=(3, 3),activation='linear',input_shape=(28,28,1),padding='same'))
+fashion_model.add(Conv2D(32, kernel_size=(3, 3),activation='linear',input_shape=(768,512,1),padding='same'))
 fashion_model.add(LeakyReLU(alpha=0.1))
 fashion_model.add(MaxPooling2D((2, 2),padding='same'))
 fashion_model.add(Conv2D(64, (3, 3), activation='linear',padding='same'))
